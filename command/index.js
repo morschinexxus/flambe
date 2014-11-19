@@ -401,7 +401,7 @@ exports.build = function (config, platforms, opts) {
                 var fdbHost = opts.fdbHost || getIP();
                 iosFlags.push("-target", "ipa-debug", "-connect", fdbHost);
             } else {
-                iosFlags.push("-target", "ipa-ad-hoc");
+                iosFlags.push("-target", "ipa-app-store");
             }
             // TODO(bruno): Make these cert options configurable
             iosFlags.push("-storetype", "pkcs12", "-keystore", cert,
