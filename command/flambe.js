@@ -59,6 +59,11 @@ cmd.setDefaults({action: function (args) {
 
 var addCommonArguments = function (parser) {
     parser.addArgument(["--debug"], {action: "storeTrue", help: "Build in debug mode."});
+
+// new db 27.11.2014
+    parser.addArgument(["--haxedefines"], {help: "Set optional haxedefines (Example : --haxedefines dev_dirk,version_testflight -> haxe -D dev_dirk -D version_testflight)"});
+// /new db 27.11.2014
+
     parser.addArgument(["--fdb-host"], {help: "The address AIR apps should connect to for debugging."});
     parser.addArgument(["--haxe-server"], {help: "Connect to a Haxe compiler server at this address/port."});
 
@@ -79,6 +84,9 @@ cmd.setDefaults({action: function (args) {
         .then(function (config) {
             return flambe.run(config, args.platform, {
                 debug: args.debug,
+// new db 27.11.2014
+                haxedefines: args.haxedefines,
+// /new db 27.11.2014
                 fdbHost: args.fdb_host,
                 haxeServer: args.haxe_server,
                 noBuild: args.no_build,
@@ -98,6 +106,9 @@ cmd.setDefaults({action: function (args) {
         .then(function (config) {
             return flambe.build(config, args.platforms, {
                 debug: args.debug,
+// new db 27.11.2014
+                haxedefines: args.haxedefines,
+// new db 27.11.2014
                 fdbHost: args.fdb_host,
                 haxeServer: args.haxe_server,
             });

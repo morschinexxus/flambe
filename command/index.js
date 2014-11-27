@@ -131,6 +131,19 @@ exports.build = function (config, platforms, opts) {
 
     var commonFlags = [];
 
+// new db 27.11.2014
+
+    if ( opts.haxedefines )
+    {
+        var haxedefinesArray = opts.haxedefines.split(",");
+        for ( var idx in haxedefinesArray )
+        {
+            commonFlags.push("-D", haxedefinesArray[idx]);
+        }
+    }
+
+// /new db 27.11.2014
+
     var assetPaths = getAllPaths(config, "assets");
     var libPaths = getAllPaths(config, "libs");
     var srcPaths = getAllPaths(config, "src");
