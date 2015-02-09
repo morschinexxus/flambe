@@ -28,17 +28,22 @@ class HtmlPlatform
     {
     }
 
-    public function init ()
+    public function init (?context:Context)
     {
         HtmlUtil.fixAndroidMath();
 
 #if html
-        // If running in a plain web browser, look up the canvas from the embedder
-        var canvas :CanvasElement = null;
-        try {
-            // Use the canvas assigned to us by the flambe.js embedder
-            canvas = (untyped Browser.window).flambe.canvas;
-        } catch (error :Dynamic) {
+        var canvas:CanvasElement = null;
+        if(context == null) {
+          try {
+              // Use the canvas assigned to us by the flambe.js embedder
+              canvas = (untyped Browser.window).flambe.canvas;
+          } catch (error :Dynamic) {
+          }
+        } else {
+          canvas = context.canvas;
+          if(context.shared)
+            Log.warn("Canvas does not support shared context");
         }
         Assert.that(canvas != null,
             "Could not find a Flambe canvas! Are you embedding with flambe.js?");

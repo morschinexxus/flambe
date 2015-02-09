@@ -19,6 +19,8 @@ import flambe.subsystem.StageSystem;
 import flambe.subsystem.StorageSystem;
 import flambe.subsystem.TouchSystem;
 import flambe.subsystem.WebSystem;
+import flambe.platform.Context;
+import flambe.platform.Platform;
 import flambe.util.Assert;
 import flambe.util.Logger;
 import flambe.util.Promise;
@@ -124,10 +126,10 @@ class System
     /**
      * Starts up Flambe, this should usually be the first thing a game does.
      */
-    public static function init ()
+    public static function init (?context:Context)
     {
         if (!_calledInit) {
-            _platform.init();
+            _platform.init(context);
             _calledInit = true;
         }
     }

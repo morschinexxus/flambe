@@ -31,29 +31,33 @@ class Stage3DRenderer
 
     public var batcher (default, null) :Stage3DBatcher;
 
-    public function new ()
+    public function new (?context:Stage3DContext)
     {
         _hasGPU = new Value<Bool>(false);
+        
+        if(context == null) {
+            // Use the first available Stage3D
+            var stage = Lib.current.stage;
+            for (stage3D in stage.stage3Ds) {
+                if (stage3D.context3D == null) {
+                    stage.addEventListener(Event.RESIZE, onResize);
 
-        // Use the first available Stage3D
-        var stage = Lib.current.stage;
-        for (stage3D in stage.stage3Ds) {
-            if (stage3D.context3D == null) {
-                stage.addEventListener(Event.RESIZE, onResize);
+                    stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DCreate);
+                    stage3D.addEventListener(ErrorEvent.ERROR, onError);
 
-                stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DCreate);
-                stage3D.addEventListener(ErrorEvent.ERROR, onError);
-
-                // The constrained profile is only available in 11.4
-                if ((untyped stage3D).requestContext3D.length >= 2) {
-                    (untyped stage3D).requestContext3D("auto", "baselineConstrained");
-                } else {
-                    stage3D.requestContext3D();
+                    // The constrained profile is only available in 11.4
+                    if ((untyped stage3D).requestContext3D.length >= 2) {
+                        (untyped stage3D).requestContext3D("auto", "baselineConstrained");
+                    } else {
+                        stage3D.requestContext3D();
+                    }
+                    return;
                 }
-                return;
             }
+            Log.error("No free Stage3Ds available!");
+        } else {
+            useContext(context);
         }
-        Log.error("No free Stage3Ds available!");
     }
 
     inline private function get_type () :RendererType
@@ -73,25 +77,25 @@ class Stage3DRenderer
 
     public function createTextureFromImage (bitmapData :BitmapData) :Stage3DTexture
     {
-        if (_context3D == null) {
+        if (_context == null) {
             return null; // No Stage3D context yet
         }
 
         var bitmapData :BitmapData = cast bitmapData;
         var root = new Stage3DTextureRoot(this, bitmapData.width, bitmapData.height);
-        root.init(_context3D, false);
+        root.init(_context.context3D, false);
         root.uploadBitmapData(bitmapData);
         return root.createTexture(bitmapData.width, bitmapData.height);
     }
 
     public function createTexture (width :Int, height :Int) :Stage3DTexture
     {
-        if (_context3D == null) {
+        if (_context == null) {
             return null; // No Stage3D context yet
         }
 
         var root = new Stage3DTextureRoot(this, width, height);
-        root.init(_context3D, true);
+        root.init(_context.context3D, true);
         return root.createTexture(width, height);
     }
 
@@ -130,14 +134,23 @@ class Stage3DRenderer
     private function onContext3DCreate (event :Event)
     {
         var stage3D :Stage3D = event.target;
-        _context3D = stage3D.context3D;
+        useContext(new Stage3DContext(stage3D.context3D, false));
+    }
 
-        Log.info("Created new Stage3D context", ["driver", _context3D.driverInfo]);
+    private function useContext (context:Stage3DContext)
+    {
+      _context = context;
+
+      if(_context.shared) {
+        Log.info("Using shared context", ["driver", _context.context3D.driverInfo]);
 #if flambe_debug_renderer
-        _context3D.enableErrorChecking = true;
+        _context.context3D.enableErrorChecking = true;
 #end
+      } else {
+        Log.info("Using exclusive context", ["driver", _context.context3D.driverInfo]);
+      }
 
-        batcher = new Stage3DBatcher(_context3D);
+        batcher = new Stage3DBatcher(_context);
         graphics = createGraphics(null);
         onResize(null);
 
@@ -153,13 +166,23 @@ class Stage3DRenderer
 
     private function onResize (_)
     {
-        if (graphics != null) {
+       if (_context != null) {
             var stage = Lib.current.stage;
             batcher.resizeBackbuffer(stage.stageWidth, stage.stageHeight);
             graphics.onResize(stage.stageWidth, stage.stageHeight);
         }
     }
 
-    private var _context3D :Context3D;
+  /*  private var _context3D :Context3D;
+
+        if (_context != null) {
+            var stage = Lib.current.stage;
+            _context.context3D.configureBackBuffer(stage.stageWidth, stage.stageHeight, 2, false);
+            _graphics.onResize(stage.stageWidth, stage.stageHeight);
+        }*/
+//    }
+
     private var _hasGPU :Value<Bool>;
+    private var _context :Context;
+    private var _graphics :Stage3DGraphics;
 }

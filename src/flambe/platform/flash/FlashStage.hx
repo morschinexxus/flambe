@@ -33,14 +33,16 @@ class FlashStage
 
     public var nativeStage (default, null) :Stage;
 
-    public function new (nativeStage :Stage)
+    public function new (nativeStage :flash.display.Stage, ?shared = false)
     {
         this.nativeStage = nativeStage;
         resize = new Signal0();
 
-        nativeStage.scaleMode = NO_SCALE;
-        nativeStage.frameRate = 60;
-        nativeStage.showDefaultContextMenu = false;
+        if(!shared) {
+          nativeStage.scaleMode = NO_SCALE;
+          nativeStage.frameRate = 60;
+          nativeStage.showDefaultContextMenu = false;
+        }
         nativeStage.addEventListener(Event.RESIZE, onResize);
 
         fullscreen = new Value<Bool>(false);
