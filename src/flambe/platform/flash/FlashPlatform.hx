@@ -34,11 +34,11 @@ class FlashPlatform
     {
     }
 
-    public function init (?context:Stage3DContext)
+    public function init (?_context:Stage3DContext)
     {
         var stage = Lib.current.stage;
-
-        _stage = new FlashStage(stage, context == null ? false : context.shared);
+        context = _context;
+        _stage = new FlashStage(stage, _context == null ? false : _context.shared);
         _pointer = new BasicPointer();
         _mouse = FlashMouse.shouldUse() ? new FlashMouse(_pointer, stage) : new DummyMouse();
 #if air
@@ -47,7 +47,7 @@ class FlashPlatform
         _touch = new DummyTouch();
 #end
 
-        _renderer = new Stage3DRenderer(context);
+        _renderer = new Stage3DRenderer(_context);
 
         mainLoop = new MainLoop();
 
@@ -239,7 +239,8 @@ class FlashPlatform
 
     private function onRender (_)
     {
-        mainLoop.render(_renderer);
+        if(context == null)
+            mainLoop.render(_renderer);
     }
 
     private function onUncaughtError (event :UncaughtErrorEvent)
@@ -259,6 +260,7 @@ class FlashPlatform
 
     // Statically initialized subsystems
     private var _mouse :MouseSystem;
+    private var context :Context;
     private var _pointer :BasicPointer;
     private var _renderer :Stage3DRenderer;
     private var _stage :FlashStage;

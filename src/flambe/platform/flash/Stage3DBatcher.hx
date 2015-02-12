@@ -50,8 +50,9 @@ class Stage3DBatcher
         if (_currentRenderTarget != null) {
             flush();
 #if flambe_debug_renderer
-            trace("Resetting render target to back buffer");
+           
 #end
+ trace("Resetting render target to back buffer");
             _context3D.setRenderToBackBuffer();
             _currentRenderTarget = _lastRenderTarget = null;
         }
@@ -257,22 +258,24 @@ class Stage3DBatcher
         if (_quads < 1) {
             return;
         }
-
-        if (_lastRenderTarget != _currentRenderTarget) {
+       if (_lastRenderTarget != _currentRenderTarget) {
             if (_lastRenderTarget != null) {
+         
                 _context3D.setRenderToTexture(_lastRenderTarget.nativeTexture, false, 2);
+
             } else {
                 _context3D.setRenderToBackBuffer();
             }
             Log.warn("Changing render target, clearing it first as required by Stage3D");
-            _context3D.clear(0, 0, 0, 0); // Required :(
+                  _context3D.clear(0, 0, 0, 0); // Required :(
             _currentRenderTarget = _lastRenderTarget;
         }
 
         if (_lastBlendMode != _currentBlendMode) {
 #if flambe_debug_renderer
-            trace("Changing blend mode: " + _lastBlendMode);
+          
 #end
+  trace("Changing blend mode: " + _lastBlendMode);
             switch (_lastBlendMode) {
                 case Normal: _context3D.setBlendFactors(ONE, ONE_MINUS_SOURCE_ALPHA);
                 case Add: _context3D.setBlendFactors(ONE, ONE);
@@ -315,6 +318,7 @@ class Stage3DBatcher
 
         // vertexBuffer.uploadFromVector(data, 0, _quads*4);
         vertexBuffer.uploadFromVector(data, 0, _maxQuads*4);
+
         _lastShader.bind(_context3D, vertexBuffer);
         _context3D.drawTriangles(_quadIndexBuffer, 0, _quads*2);
         _lastShader.unbind(_context3D);
@@ -322,6 +326,7 @@ class Stage3DBatcher
 #if flambe_debug_renderer
         trace("Flushed " + _quads + " / " + _maxQuads + " quads");
 #end
+        
         _quads = 0;
         _dataOffset = 0;
     }

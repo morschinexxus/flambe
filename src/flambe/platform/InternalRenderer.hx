@@ -9,6 +9,7 @@ import haxe.io.Bytes;
 import flambe.asset.AssetEntry;
 import flambe.display.Graphics;
 import flambe.display.Texture;
+import flambe.display.Sprite;
 import flambe.subsystem.RendererSystem;
 
 interface InternalRenderer<NativeImage> extends RendererSystem<NativeImage>
@@ -26,6 +27,7 @@ interface InternalRenderer<NativeImage> extends RendererSystem<NativeImage>
      * Notifies the renderer that things are about to be drawn.
      */
     function willRender () :Void;
+    function render () :Void;
 
     /**
      * Notifies the renderer that drawing the frame is complete.
