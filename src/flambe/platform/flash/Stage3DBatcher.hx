@@ -50,9 +50,9 @@ class Stage3DBatcher
         if (_currentRenderTarget != null) {
             flush();
 #if flambe_debug_renderer
-           
+     trace("Resetting render target to back buffer");       
 #end
- trace("Resetting render target to back buffer");
+
             _context3D.setRenderToBackBuffer();
             _currentRenderTarget = _lastRenderTarget = null;
         }
@@ -266,16 +266,16 @@ class Stage3DBatcher
             } else {
                 _context3D.setRenderToBackBuffer();
             }
-            Log.warn("Changing render target, clearing it first as required by Stage3D");
+           // Log.warn("Changing render target, clearing it first as required by Stage3D");
                   _context3D.clear(0, 0, 0, 0); // Required :(
             _currentRenderTarget = _lastRenderTarget;
         }
 
         if (_lastBlendMode != _currentBlendMode) {
 #if flambe_debug_renderer
-          
+   trace("Changing blend mode: " + _lastBlendMode);
+         
 #end
-  trace("Changing blend mode: " + _lastBlendMode);
             switch (_lastBlendMode) {
                 case Normal: _context3D.setBlendFactors(ONE, ONE_MINUS_SOURCE_ALPHA);
                 case Add: _context3D.setBlendFactors(ONE, ONE);
