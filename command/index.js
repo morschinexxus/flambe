@@ -19,7 +19,7 @@ var HTTP_PORT = 7000;
 var SOCKET_PORT = HTTP_PORT+1;
 
 // The minimum SWF version for browser Flash. For AIR, we always use the latest
-var SWF_VERSION = "11.2";
+var SWF_VERSION = "15";
 
 exports.PLATFORMS = ["html", "flash", "android", "ios", "firefox"];
 
@@ -261,7 +261,7 @@ exports.build = function (config, platforms, opts) {
     };
 
     var buildAir = function (flags) {
-        var airFlags = swfFlags(true).concat(["-swf-version", "11.7", "-D", "air"]);
+        var airFlags = swfFlags(true).concat(["-swf-version", "15", "-D", "air"]);
 
         wrench.mkdirSyncRecursive(CACHE_DIR+"air");
         return prepareAssets(CACHE_DIR+"air/assets")
@@ -273,7 +273,7 @@ exports.build = function (config, platforms, opts) {
     var generateAirXml = function (swf, output) {
         var xmldom = require("xmldom");
         var xml =
-            "<application xmlns=\"http://ns.adobe.com/air/application/4.0\">\n" +
+            "<application xmlns=\"http://ns.adobe.com/air/application/15.0\">\n" +
             "  <id>"+get(config, "id")+"</id>\n" +
             "  <versionNumber>"+get(config, "version")+"</versionNumber>\n" +
             "  <filename>"+get(config, "name")+"</filename>\n" +
