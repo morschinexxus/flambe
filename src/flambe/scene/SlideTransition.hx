@@ -76,8 +76,8 @@ class SlideTransition extends TweenTransition
         if (sprite == null) {
             _from.add(sprite = new Sprite());
         }
-        sprite.setXY(0, 0);
-
+        // stay where you are!
+        // sprite.setXY(sprite.x._, sprite.y._);
         var sprite = _to.get(Sprite);
         if (sprite == null) {
             _to.add(sprite = new Sprite());
@@ -88,7 +88,7 @@ class SlideTransition extends TweenTransition
     override public function update (dt :Float) :Bool
     {
         var done = super.update(dt);
-        _from.get(Sprite).setXY(interp(0, _x), interp(0, _y));
+        _from.get(Sprite).setXY(interp(_from.get(Sprite).x._, _x), interp(0, _y));
         _to.get(Sprite).setXY(interp(-_x, 0), interp(-_y, 0));
         return done;
     }
