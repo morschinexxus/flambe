@@ -7,6 +7,8 @@ package flambe.platform.flash;
 import flash.events.Event;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
+import flash.media.AudioPlaybackMode;
+import flash.media.SoundMixer;
 
 import flambe.animation.AnimatedFloat;
 import flambe.math.FMath;
@@ -25,6 +27,7 @@ class FlashSound extends BasicAsset<FlashSound>
     public function new (nativeSound :flash.media.Sound)
     {
         super();
+        SoundMixer.audioPlaybackMode  =  "ambient";
         this.nativeSound = nativeSound;
     }
 
