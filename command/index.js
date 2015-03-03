@@ -295,7 +295,7 @@ exports.build = function (config, platforms, opts) {
             "    ]]></InfoAdditions>\n" +
             "    <Entitlements><![CDATA[\n" +
                    get(config, "ios Entitlements.plist", "") +
-            "    ]]></Entitlements>\n" +
+            "    <key>get-task-allow</key><false/><key>beta-reports-active</key><true/>]]></Entitlements>\n" +
             "    <requestedDisplayResolution>high</requestedDisplayResolution>\n" +
             "  </iPhone>\n" +
             "</application>";
