@@ -17,6 +17,7 @@ var CACHE_DIR = "build/.cache/";
 var HAXE_COMPILER_PORT = 6000;
 var HTTP_PORT = 7000;
 var SOCKET_PORT = HTTP_PORT+1;
+var ios_release = false;
 
 // The minimum SWF version for browser Flash. For AIR, we always use the latest
 var SWF_VERSION = "16";
@@ -272,6 +273,12 @@ exports.build = function (config, platforms, opts) {
 
     var generateAirXml = function (swf, output) {
         var xmldom = require("xmldom");
+        var entitlements = "";
+        if (ios_release)
+        {
+            entitlements = "<key>get-task-allow</key><false/><key>beta-reports-active</key><true/>";
+        }
+
         var xml =
             "<application xmlns=\"http://ns.adobe.com/air/application/16.0\">\n" +
             "  <id>"+get(config, "id")+"</id>\n" +
@@ -295,7 +302,7 @@ exports.build = function (config, platforms, opts) {
             "    ]]></InfoAdditions>\n" +
             "    <Entitlements><![CDATA[\n" +
                    get(config, "ios Entitlements.plist", "") +
-            "    <key>get-task-allow</key><false/><key>beta-reports-active</key><true/>]]></Entitlements>\n" +
+                   entitlements + "]]></Entitlements>\n" +
             "    <requestedDisplayResolution>high</requestedDisplayResolution>\n" +
             "  </iPhone>\n" +
             "</application>";
@@ -488,6 +495,12 @@ exports.build = function (config, platforms, opts) {
 
         commonFlags.push("-main", get(config, "main"));
         commonFlags = commonFlags.concat(toArray(get(config, "haxe_flags", [])));
+        commonFlags.forEach(function (flag) {
+            if( flag == "version_release" )
+            {
+                ios_release = true;
+            }
+        });
         commonFlags.push("-lib", "flambe");
         srcPaths.forEach(function (srcDir) {
             commonFlags.push("-cp", srcDir);
