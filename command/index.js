@@ -496,7 +496,7 @@ exports.build = function (config, platforms, opts) {
         commonFlags.push("-main", get(config, "main"));
         commonFlags = commonFlags.concat(toArray(get(config, "haxe_flags", [])));
         commonFlags.forEach(function (flag) {
-            if( flag == "version_release" )
+            if( debug != true && flag == "version_release" )
             {
                 ios_release = true;
             }
