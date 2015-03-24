@@ -259,7 +259,7 @@ class Stage3DBatcher
             } else {
                 _context3D.setRenderToBackBuffer();
             }
-            Log.warn("Changing render target, clearing it first as required by Stage3D");
+//Log.warn("Changing render target, clearing it first as required by Stage3D");
             _context3D.clear(0, 0, 0, 0); // Required :(
             _currentRenderTarget = _lastRenderTarget;
         }
