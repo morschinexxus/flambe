@@ -6,7 +6,7 @@ package flambe.platform;
 
 import sys.FileSystem;
 import sys.io.File;
-
+import haxe.crypto.Md5;
 import haxe.macro.Context;
 
 using StringTools;
@@ -31,11 +31,16 @@ class ManifestBuilder
             for (packName in FileSystem.readDirectory(assetsDir)) {
                 var entries = [];
                 if (FileSystem.isDirectory(assetsDir + packName)) {
+
                     for (file in readRecursive(assetsDir + packName)) {
                         var path = assetsDir + packName + "/" + file;
+
+                        var md5S:String =Md5.encode(File.getBytes(path).toString());
+                        md5S = md5S.substr(0,30)+"00";
+
                         entries.push({
                             name: file,
-                            md5: Context.signature(File.getBytes(path)),
+                            md5: md5S,
                             bytes: FileSystem.stat(path).size,
                         });
                     }
