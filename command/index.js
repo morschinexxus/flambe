@@ -274,9 +274,22 @@ exports.build = function (config, platforms, opts) {
     var generateAirXml = function (swf, output) {
         var xmldom = require("xmldom");
         var entitlements = "";
-        if (ios_release)
+        
+        if ( ios_release )
         {
-            entitlements = "<key>get-task-allow</key><false/><key>beta-reports-active</key><true/>";
+            entitlements =  "           <key>beta-reports-active</key>\n" +
+                            "             <true/>\n" +
+                            "           <key>aps-environment</key>\n" +
+                            "             <string>production</string>\n" +
+                            "           <key>get-task-allow</key>\n" +
+                            "             <false/>\n";
+        }
+        else
+        {
+            entitlements =  "           <key>aps-environment</key>\n" +
+                            "             <string>development</string>\n" +
+                            "           <key>get-task-allow</key>\n" +
+                            "             <true/>\n";
         }
 
         var xml =
@@ -297,12 +310,17 @@ exports.build = function (config, platforms, opts) {
             "    ]]></manifestAdditions>\n" +
             "  </android>\n" +
             "  <iPhone>\n" +
-            "    <InfoAdditions><![CDATA[\n" +
-                   get(config, "ios Info.plist", "") +
-            "    ]]></InfoAdditions>\n" +
-            "    <Entitlements><![CDATA[\n" +
-                   get(config, "ios Entitlements.plist", "") +
-                   entitlements + "]]></Entitlements>\n" +
+            "    <InfoAdditions>\n" +
+            "      <![CDATA[\n" +
+                     get(config, "ios Info.plist", "") +
+            "      ]]>" +
+            "    </InfoAdditions>\n" +
+            "      <Entitlements>" +
+            "        <![CDATA[\n" +
+                        entitlements +
+                        get(config, "ios Entitlements.plist", "") +
+            "        ]]>\n" +
+            "      </Entitlements>\n" +
             "    <requestedDisplayResolution>high</requestedDisplayResolution>\n" +
             "  </iPhone>\n" +
             "</application>";
