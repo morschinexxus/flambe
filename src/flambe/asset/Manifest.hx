@@ -57,7 +57,7 @@ class Manifest
 
         for (asset in packData) {
             var name = asset.name;
-            var path = packName + "/" + name + "?v=" + asset.md5;
+            var path = packName + "/" + name + "?__cv=" + asset.md5;
 
             var format = inferFormat(name);
             if (format != Data) {
